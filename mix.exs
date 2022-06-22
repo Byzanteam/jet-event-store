@@ -7,6 +7,9 @@ defmodule JetEventStore.MixProject do
       version: "0.1.0",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+      ],
       deps: deps()
     ]
   end
@@ -18,6 +21,9 @@ defmodule JetEventStore.MixProject do
   end
 
   defp deps do
-    []
+    [
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+    ]
   end
 end
