@@ -10,6 +10,7 @@ defmodule JetEventStore.MixProject do
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
       ],
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -24,6 +25,12 @@ defmodule JetEventStore.MixProject do
     [
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp aliases do
+    [
+      "code.check": ["format --check-formatted", "credo --strict", "dialyzer"]
     ]
   end
 end
