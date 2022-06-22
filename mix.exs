@@ -23,6 +23,7 @@ defmodule JetEventStore.MixProject do
 
   defp deps do
     [
+      {:ecto, "~> 3.8"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
