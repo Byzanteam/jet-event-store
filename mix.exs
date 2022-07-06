@@ -21,11 +21,12 @@ defmodule JetEventStore.MixProject do
 
   defp deps do
     [
-      {:ecto, "~> 3.8"},
-      {:typed_struct, "~> 0.3.0"},
       {:commanded, "~> 1.3.1", optional: true},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:ecto, "~> 3.8"},
+      {:ex_doc, "~> 0.28.4", only: :dev},
+      {:typed_struct, "~> 0.3.0"}
     ]
   end
 
