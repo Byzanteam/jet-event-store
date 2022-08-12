@@ -22,7 +22,7 @@ defmodule JetEventStore.Command.GenericCommand do
           field :name, :string
         end
 
-        defimpl Validation do
+        defimpl Validator do
           def validate(command) do
             command.__changeset__
             |> Ecto.Changeset.validate_length(:name, max: 255)
@@ -49,6 +49,8 @@ defmodule JetEventStore.Command.GenericCommand do
       @before_compile unquote(__MODULE__)
 
       use Ecto.Schema
+
+      alias JetEventStore.Middleware.ValidateCommand.CommandValidator, as: Validator
 
       @timestamps_opts [type: :naive_datetime_usec]
       @primary_key false
