@@ -53,10 +53,15 @@ defmodule JetEventStore.Aggregate.Aggregates do
           try do
             state = apply(unquote(aggregate_fetcher), [module, prefix <> uuid])
 
-            if match?(%{:__struct__ => ^module, ^by => ^uuid}, state) do
-              {:ok, state}
-            else
-              :error
+            cond do
+              is_atom(by) and is_struct(state, module) and Map.get(state, by) === uuid ->
+                {:ok, state}
+
+              is_function(by, 1) and is_struct(state, module) and by.(state) === uuid ->
+                {:ok, state}
+
+              true ->
+                :error
             end
           after
             Process.flag(:trap_exit, prev_trap_exit_flag)
