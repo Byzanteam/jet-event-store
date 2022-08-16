@@ -138,5 +138,5 @@ jobs:
             ${{ runner.os }}-plt-
 
       - name: Dialyzer
-        run: mix dialyzer
+        run: mix dialyzer --format=github
 
