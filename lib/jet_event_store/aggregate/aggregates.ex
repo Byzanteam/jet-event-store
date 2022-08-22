@@ -29,7 +29,7 @@ defmodule JetEventStore.Aggregate.Aggregates do
   Then you can fetch aggregate state by `BankAggregates.fetch_account/1` or `BankAggregates.fetch_account!/1`.
   """
 
-  @type uuid() :: Ecto.UUID.t()
+  @type uuid() :: String.t()
 
   defmacro __using__(opts) do
     aggregate_fetcher = Keyword.fetch!(opts, :aggregate_fetcher)
@@ -48,22 +48,10 @@ defmodule JetEventStore.Aggregate.Aggregates do
         def fetch(unquote(name), uuid) do
           prev_trap_exit_flag = Process.flag(:trap_exit, false)
           options = unquote(module).__options__()
-          by = Keyword.fetch!(options, :by)
           prefix = Keyword.fetch!(options, :prefix)
 
           try do
-            state = apply(unquote(aggregate_fetcher), [unquote(module), prefix <> uuid])
-
-            cond do
-              is_atom(by) and is_struct(state, unquote(module)) and Map.get(state, by) === uuid ->
-                {:ok, state}
-
-              is_function(by, 1) and is_struct(state, unquote(module)) and by.(state) === uuid ->
-                {:ok, state}
-
-              true ->
-                :error
-            end
+            unquote(aggregate_fetcher).fetch_state(unquote(module), prefix <> uuid)
           after
             Process.flag(:trap_exit, prev_trap_exit_flag)
           end
