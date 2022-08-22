@@ -1,8 +1,6 @@
 defmodule JetEventStore.Aggregate.AggregatesTest do
   use ExUnit.Case, async: true
 
-  alias __MODULE__
-
   defmodule MyAggregate do
     use JetEventStore.Aggregate,
       by: :aggregate_uuid,
@@ -48,9 +46,29 @@ defmodule JetEventStore.Aggregate.AggregatesTest do
     def __name__(_data), do: "singular-aggregate"
   end
 
+  defmodule Fetcher do
+    @behaviour JetEventStore.Aggregate.Fetcher
+
+    def fetch_state(MyAggregate, "aggregate-exists") do
+      {:ok, %MyAggregate{aggregate_uuid: "exists"}}
+    end
+
+    def fetch_state(MyLifespanAggregate, "lifespan-aggregate-exists") do
+      {:ok, %MyLifespanAggregate{lifespan_aggregate_uuid: "exists"}}
+    end
+
+    def fetch_state(MySingularAggregate, "singular-aggregate-" <> "singular-aggregate") do
+      {:ok, %MySingularAggregate{data: %{}}}
+    end
+
+    def fetch_state(_aggregate_module, _uuid) do
+      :error
+    end
+  end
+
   defmodule MyAggregates do
     use JetEventStore.Aggregate.Aggregates,
-      aggregate_fetcher: &AggregatesTest.fetch_state/2,
+      aggregate_fetcher: Fetcher,
       aggregates: [
         my_aggregate: MyAggregate,
         my_lifespan_aggregate: MyLifespanAggregate,
