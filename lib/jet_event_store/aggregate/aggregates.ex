@@ -48,10 +48,23 @@ defmodule JetEventStore.Aggregate.Aggregates do
         def fetch(unquote(name), uuid) do
           prev_trap_exit_flag = Process.flag(:trap_exit, false)
           options = unquote(module).__options__()
+          by = Keyword.fetch!(options, :by)
           prefix = Keyword.fetch!(options, :prefix)
 
           try do
-            unquote(aggregate_fetcher).fetch_state(unquote(module), prefix <> uuid)
+            with {:ok, state} <-
+                   unquote(aggregate_fetcher).fetch_state(unquote(module), prefix <> uuid) do
+              cond do
+                is_atom(by) and is_struct(state, unquote(module)) and Map.get(state, by) === uuid ->
+                  {:ok, state}
+
+                is_function(by, 1) and is_struct(state, unquote(module)) and by.(state) === uuid ->
+                  {:ok, state}
+
+                true ->
+                  :error
+              end
+            end
           after
             Process.flag(:trap_exit, prev_trap_exit_flag)
           end
