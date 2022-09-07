@@ -21,7 +21,7 @@ defmodule JetEventStore.MixProject do
 
   defp deps do
     [
-      {:commanded, "~> 1.3.1", optional: true},
+      {:commanded, "~> 1.4", optional: true},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto, "~> 3.8"},
