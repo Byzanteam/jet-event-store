@@ -100,7 +100,7 @@ defmodule JetEventStore.Command.GenericCommand do
       @spec build_changeset(params :: map()) :: Ecto.Changeset.t(t())
       defp build_changeset(params) do
         data = __struct__()
-        permitted = __schema__(:fields)
+        permitted = __schema__(:fields) -- __schema__(:embeds)
 
         data
         |> Ecto.Changeset.cast(params, permitted)
